@@ -39,15 +39,15 @@ A linear Ordinary Differential Equations (ODE) state-space model was used to est
 
 Rather than modeling thousands of individual genes separately, the transcriptomic information was summarized into a low-dimensional immune-state representation. The four immune programs form the state vector:
 
-$$
-X(t)=
+```math
+X(t) =
 \begin{bmatrix}
 I(t) \\
 N(t) \\
 M(t) \\
 R(t)
 \end{bmatrix}
-$$
+```
 
 where each component represents the activity of one transcriptomic immune program within the reduced immune-state space.
 
@@ -55,27 +55,25 @@ where each component represents the activity of one transcriptomic immune progra
 
 The immune-state system was represented as:
 
-$$
-\frac{dX}{dt}=AX
-$$
+```math
+\frac{dX}{dt} = AX
+```
 
 where **X** is the four-dimensional immune-state vector and **A** is the estimated interaction matrix. Interaction coefficients in **A** were estimated using ridge-regularized regression.
 
 The estimated interaction matrix was:
 
-$$
-A=
+```math
+A =
 \begin{bmatrix}
 -1.026 & -0.128 & -0.294 & +0.141 \\
 -0.013 & -0.835 & +0.143 & -0.090 \\
 -0.064 & +0.034 & -1.052 & +0.010 \\
 +0.002 & -0.094 & -0.163 & -0.766
 \end{bmatrix}
-$$
+```
 
-The rows and columns follow the same order:
-
-**Interferon–Antiviral (I), Neutrophil–Antibacterial (N), Myeloid–Inflammatory (M), Regulatory–Resolution (R).**
+The rows and columns follow the same order: **Interferon–Antiviral (I), Neutrophil–Antibacterial (N), Myeloid–Inflammatory (M), and Regulatory–Resolution (R)**.
 
 Each **row** describes the modeled change in one immune program, whereas each **column** represents the estimated contribution of an immune program to that change.
 
@@ -83,18 +81,13 @@ Each **row** describes the modeled change in one immune program, whereas each **
 - **Off-diagonal coefficients** represent estimated cross-program coupling.
 - **Positive coefficients** indicate positive coupling within the fitted model.
 - **Negative coefficients** indicate negative coupling within the fitted model.
-- The absolute magnitude of a coefficient reflects the strength of the corresponding relationship within this fitted linear representation.
+- The absolute magnitude of a coefficient reflects the relative strength of the corresponding relationship within this fitted linear representation.
 
 For example, the first row describes the modeled interferon state:
 
-$$
-\frac{dI}{dt}
-=
--1.026I
--0.128N
--0.294M
-+0.141R
-$$
+```math
+\frac{dI}{dt} = -1.026I - 0.128N - 0.294M + 0.141R
+```
 
 Within the fitted model, the interferon diagonal coefficient (**−1.026**) represents estimated negative self-regulation. The myeloid-to-interferon coefficient (**−0.294**) represents negative cross-program coupling, whereas the regulatory-to-interferon coefficient (**+0.141**) represents positive cross-program coupling.
 
@@ -112,65 +105,53 @@ System stability was evaluated from the eigenvalue spectrum of the estimated int
 
 The estimated eigenvalues were approximately:
 
-$$
-\lambda =
-\{-1.16,\,-0.97,\,-0.89,\,-0.67\}
-$$
+```math
+\lambda = \{-1.16,\,-0.97,\,-0.89,\,-0.67\}
+```
 
 All four eigenvalues had negative real parts:
 
-$$
-\operatorname{Re}(\lambda_i)<0
-\quad \text{for all } i
-$$
+```math
+\mathrm{Re}(\lambda_i) < 0
+```
 
 For the estimated continuous linear ODE system, this condition indicates **asymptotic stability**. In mathematical terms, perturbations within the fitted linear system tend to decay rather than grow indefinitely.
 
-This result refers specifically to the **mathematical stability of the estimated linear ODE system**. It should not be interpreted as evidence that the biological immune response of an individual patient is necessarily clinically stable.
+This stability result refers specifically to the **mathematical behavior of the estimated linear ODE system**. It should not be interpreted as direct evidence that the biological immune response of an individual patient is clinically stable.
 
 ### Conceptual Interpretation
 
-The mathematical workflow can be summarized as:
+For readers without a mathematical or clinical background, the modeling workflow can be summarized as:
 
-**Whole-blood RNA sequencing**
-
-↓
-
-**Gene-level expression profiles**
-
-↓
-
-**Four biologically informed immune programs**
-
-↓
-
+**Whole-blood RNA sequencing**  
+↓  
+**Gene-level expression profiles**  
+↓  
+**Four biologically informed immune programs**  
+↓  
 **Low-dimensional immune-state vector**
 
-$$
-X=(I,N,M,R)^T
-$$
+```math
+X = (I,N,M,R)^T
+```
 
-↓
-
-**Estimated interaction matrix A**
-
-↓
-
+↓  
+**Estimated interaction matrix A**  
+↓  
 **Linear ODE state-space model**
 
-$$
-\frac{dX}{dt}=AX
-$$
+```math
+\frac{dX}{dt} = AX
+```
 
-↓
+↓  
+**Self-regulation, cross-program coupling, and eigenvalue-based stability analysis**
 
-**Self-regulation + cross-program coupling + eigenvalue-based stability analysis**
-
-This framework therefore converts high-dimensional transcriptomic information into a smaller mathematical representation that can be interpreted in terms of relationships among major immune programs.
+In simple terms, the framework reduces high-dimensional gene-expression information into four interpretable immune-state variables and then uses a mathematical model to describe how those states are related within the fitted system.
 
 ### Important Interpretation of Time and Dynamics
 
-GSE211567 provides **cross-sectional transcriptomic measurements**, rather than serial longitudinal measurements of the same individuals across continuous time. Consequently, the derivative \(dX/dt\) should be interpreted as a **model-derived state-space quantity**, not as a directly measured temporal change in an individual patient's immune state.
+GSE211567 provides **cross-sectional transcriptomic measurements**, rather than serial longitudinal measurements of the same individuals across continuous time. Consequently, the derivative **dX/dt** should be interpreted as a **model-derived state-space quantity**, rather than as a directly measured temporal change in an individual patient's immune state.
 
 Accordingly, terms such as **interaction**, **coupling**, **dynamics**, and **stability** in this repository refer to properties inferred within the fitted mathematical state-space framework. The model is intended to characterize transcriptomic immune-state structure and its mathematical relationships rather than to reconstruct directly observed longitudinal patient-level immune kinetics.
 
